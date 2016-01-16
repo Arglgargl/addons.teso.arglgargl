@@ -1,8 +1,8 @@
 ## APIVersion: 	100013
-## Version: 0.0.2 
+## Version: 0.0.3 
 ## Title: |cd4af37Gold|r Counter Version |c3689ef0.0.2|r
 ## Description: Tracks gold income from various sources 
 ## Author: Arglgargl
-## SavedVariables: GoldCounter_Config
+## SavedVariables: GoldCounterConfig GoldCounterData
 
 GoldCounter.lua
