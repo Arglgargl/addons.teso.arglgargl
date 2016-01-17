@@ -1,85 +1,26 @@
 -- Namespace and Constants
 GC = {}
 GC.NAME = "GoldCounter"
-GC.VERSION = "0.0.3"
+GC.VERSION = "0.0.4"
 GC.COLOR_GOLD = "d4af37"
-GC.VARIABLES_CONFIG = GC.NAME.."_Config"
+GC.VARIABLES_CONFIG = GC.NAME.."Config"
 GC.VARIABLES_CONFIG_VERSION = 1
-GC.VARIABLES_DATA = GC.NAME.."_Data"
+GC.VARIABLES_DATA = GC.NAME.."Data"
 GC.VARIABLES_DATA_VERSION = 1
 
-GC.GAIN_CATEGORY_TRADE = "trade"
-GC.GAIN_CATEGORY_MAIL = "mail"
-GC.GAIN_CATEGORY_LOOT = "loot"
-GC.GAIN_CATEGORY_REWARD = "reward"
-GC.GAIN_CATEGORY_UNKNOWN = "unknown"
-
-GC.GAIN_DETAIL_VENDOR = "vendor"
-GC.GAIN_DETAIL_MAIL = "mail"
-GC.GAIN_DETAIL_LOOT = "Loot"
-GC.GAIN_DETAIL_QUEST = "quest"
-GC.GAIN_DETAIL_FENCE = "fence"
-GC.GAIN_DETAIL_UNKNOWN = "unknown"
-
-GC.config = {}
-GC.data = {}
-
- -- Initialize AddOn
-function GC.OnAddOnLoaded( event, addonName )
-  if addonName ~= GC.NAME then
-    return;
-  end
-
-  local Config_Defaults =  {
-  }  
-  
-  local Data_Defaults =  {
-    ['Transactions'] = {}  
-  }  
-
-  -- load datastore
-  GC.config = ZO_SavedVars:New( "GoldCounterConfig", 1, nil, {} )
-  GC.data = ZO_SavedVars:New( GC.VARIABLES_DATA, GC.VARIABLES_DATA_VERSION, nil, Data_Defaults )
---  self.config = ZO_SavedVars:New( GC.VARIABLES_CONFIG, GC.VARIABLES_CONFIG_VERSION, nil, Config_Defaults )
---  self.data = ZO_SavedVars:New( GC.VARIABLES_DATA, GC.VARIABLES_DATA_VERSION, nil, Data_Defaults )
-  
-  -- register events
-  EVENT_MANAGER:RegisterForEvent( 0, EVENT_MONEY_UPDATE, GC.OnMoneyUpdate )
-  
-  zo_callLater( GC.OutputInitMessage, 4000 )
-end
-
-function GC.OutputInitMessage()
-  GC.MsgGold( GC.NAME .. " v" .. GC.VERSION .. " initialized." )
-end
-
-EVENT_MANAGER:RegisterForEvent( GC.NAME, EVENT_ADD_ON_LOADED, GC.OnAddOnLoaded )
-
--- Database
-function GC.logGold( amount, category, detail )
--- TODO: add to database
---    GC.MsgGold( 'logGold: amount: '..amount )
---    GC.MsgGold( 'logGold: category: '..category )
---    GC.MsgGold( 'logGold: detail: '..detail )
-
-    GC.MsgGold( 'logGold: amount: '..amount.." category: "..category.."  detail: "..detail )
-end
-
-
--- Event Handler
--- EVENT_MONEY_UPDATE( integer eventCode, integer newMoney, integer oldMoney, integer reason )
-function GC.OnMoneyUpdate( eventCode, newMoney, oldMoney, reason )
-
--- Actions:
-  -- Verkauf Händler: reason 1; code 131209
-  -- Kauf Händler: reason 1; code 131209
-  -- Rüsse Reppen: reason 29; code 131209
-
+-- FIXME: put into map, loaded from i10n resource
 --CURRENCY_CHANGE_REASON_LOOT = 0
+GC.REASON_DESCRIPTION_LOOT = "loot"
 --CURRENCY_CHANGE_REASON_VENDOR = 1
+GC.REASON_DESCRIPTION_VENDOR = "vendor"
 --CURRENCY_CHANGE_REASON_MAIL = 2
+GC.REASON_DESCRIPTION_MAIL = "mail"
+
 --CURRENCY_CHANGE_REASON_TRADE = 3
+
 --CURRENCY_CHANGE_REASON_QUESTREWARD = 4
+GC.REASON_DESCRIPTION_QUESTREWARD = "quest reward"
+
 --CURRENCY_CHANGE_REASON_CONVERSATION = 5
 --CURRENCY_CHANGE_REASON_ACTION = 6
 --CURRENCY_CHANGE_REASON_COMMAND = 7
@@ -135,49 +76,88 @@ function GC.OnMoneyUpdate( eventCode, newMoney, oldMoney, reason )
 --CURRENCY_CHANGE_REASON_VENDOR_LAUNDER = 60
 --CURRENCY_CHANGE_REASON_RESPEC_CHAMPION = 61
 --CURRENCY_CHANGE_REASON_LOOT_STOLEN = 62
+
 --CURRENCY_CHANGE_REASON_SELL_STOLEN =63
+GC.REASON_DESCRIPTION_SELL_STOLEN = "sell stolen"
+
 --CURRENCY_CHANGE_REASON_BUYBACK = 64
 --CURRENCY_CHANGE_REASON_PVP_KILL_TRANSFER = 65
 --CURRENCY_CHANGE_REASON_BANK_FEE = 66
 --CURRENCY_CHANGE_REASON_DEATH = 67
 
-  GC.MsgGold( 'OnMoneyUpdate: EventCode: '..eventCode.." newMoney: "..newMoney.."  oldMoney: "..oldMoney.." reason: "..reason )
-  
-  local amount = newMoney - oldMoney
-  local category = GC.moneyUpdateReasonToCategory( reason )
-  local detail = GC.moneyUpdateReasonToDetail( reason )
-  if( amount > 0 ) then
-    GC.logGold( amount, category, detail )
+GC.REASON_DESCRIPTION_UNKNOWN = "unknown"
+
+
+GC.config = {}
+GC.data = {}
+
+ -- Initialize AddOn
+function GC.OnAddOnLoaded( event, addonName )
+  if addonName ~= GC.NAME then
+    return;
   end
+
+  local Config_Defaults =  {
+  }  
+  
+  local Data_Defaults =  {
+    ['TransactionsCount'] = 0,  
+    ['Transactions'] = {}  
+  }  
+
+  -- load datastore
+  GC.config = ZO_SavedVars:New( GC.VARIABLES_CONFIG, GC.VARIABLES_CONFIG_VERSION, nil, Config_Defaults )
+  GC.data = ZO_SavedVars:New( GC.VARIABLES_DATA, GC.VARIABLES_DATA_VERSION, nil, Data_Defaults )
+  
+  -- register events
+  EVENT_MANAGER:RegisterForEvent( 0, EVENT_MONEY_UPDATE, GC.OnMoneyUpdate )
+  
+  zo_callLater( GC.OutputInitMessage, 4000 )
 end
 
-function GC.moneyUpdateReasonToCategory( reason )
-  if( reason == CURRENCY_CHANGE_REASON_LOOT ) then
-    return GC.GAIN_CATEGORY_LOOT
-  elseif( reason == CURRENCY_CHANGE_REASON_MAIL ) then
-    return GC.GAIN_CATEGORY_MAIL
-  elseif( reason == CURRENCY_CHANGE_REASON_VENDOR ) then
-    return GC.GAIN_CATEGORY_TRADE
-  elseif( reason == CURRENCY_CHANGE_REASON_QUESTREWARD ) then
-    return GC.GAIN_CATEGORY_REWARD
-  elseif( reason == 63 ) then
-    return GC.GAIN_CATEGORY_REWARD
-  else
-    return GC.GAIN_CATEGORY_UNKNOWN
-   end
+function GC.OutputInitMessage()
+  GC.MsgGold( GC.NAME .. " v" .. GC.VERSION .. " initialized." )
 end
 
-function GC.moneyUpdateReasonToDetail( reason )
+EVENT_MANAGER:RegisterForEvent( GC.NAME, EVENT_ADD_ON_LOADED, GC.OnAddOnLoaded )
+
+-- Database
+function GC.logGold( amount, reason, description )
+
+    GC.MsgGold( 'logGold: amount: '..amount.." reason: "..reason.."  description: "..description )
+
+    GC.data.TransactionsCount = GC.data.TransactionsCount + 1 
+    GC.MsgGold( 'logGold: count: '..GC.data.TransactionsCount )
+
+    GC.data.Transactions[GC.data.TransactionsCount] = {
+      ['amount'] = amount,
+      ['reason'] = reason
+    }
+end
+
+
+-- Event Handler
+-- EVENT_MONEY_UPDATE( integer eventCode, integer newMoney, integer oldMoney, integer reason )
+function GC.OnMoneyUpdate( eventCode, newMoney, oldMoney, reason )
+
+  local amount = newMoney - oldMoney
+  local description = GC.moneyUpdateReasonToDescription( reason )
+  GC.logGold( amount, reason, description )
+end
+
+function GC.moneyUpdateReasonToDescription( reason )
   if( reason == CURRENCY_CHANGE_REASON_LOOT ) then
-    return GC.GAIN_DETAIL_LOOT
-  elseif( reason == CURRENCY_CHANGE_REASON_MAIL ) then
-    return GC.GAIN_DETAIL_MAIL
+    return GC.REASON_DESCRIPTION_LOOT
   elseif( reason == CURRENCY_CHANGE_REASON_VENDOR ) then
-    return GC.GAIN_DETAIL_VENDOR
+    return GC.REASON_DESCRIPTION_VENDOR
+  elseif( reason == CURRENCY_CHANGE_REASON_MAIL ) then
+    return GC.REASON_DESCRIPTION_MAIL
   elseif( reason == CURRENCY_CHANGE_REASON_QUESTREWARD ) then
-    return GC.GAIN_DETAIL_QUEST
+    return GC.REASON_DESCRIPTION_QUESTREWARD
+  elseif( reason == CURRENCY_CHANGE_REASON_SELL_STOLEN ) then
+    return GC.REASON_DESCRIPTION_SELL_STOLEN
   else
-    return GC.GAIN_DETAIL_UNKNOWN
+    return GC.REASON_DESCRIPTION_UNKNOWN
   end
 end
 
