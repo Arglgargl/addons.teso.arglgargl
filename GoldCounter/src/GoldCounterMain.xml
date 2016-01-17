@@ -1,0 +1,24 @@
+<GuiXml>
+  <Controls>
+    <TopLevelControl name="GoldCounterMainWindow">
+      <Dimensions x="200" y="200" />
+      <Anchor point="BOTTOM" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-20" />
+ 
+      <Controls>
+        <Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop" />      
+        <Label name="$(parent)Label" width="200" height="25" font="ZoFontWinH1" inheritAlpha="true" color="D4AF37"
+            wrapMode="TRUNCATE" verticalAlignment="TOP" horizontalAlignment="CENTER" text="Gold Counter">
+          <Anchor point="TOP" relativeTo="$(parent)" relativePoint="TOP" />
+        </Label>
+        <Button name="$(parent)CloseButton" inheritAlpha="true" verticalAlignment="CENTER" horizontalAlignment="CENTER">
+          <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="-20" offsetY="20" />
+          <Dimensions x="48" y="48" />
+          <Textures normal="/esoui/art/hud/radialicon_cancel_up.dds" mouseOver="/esoui/art/hud/radialicon_cancel_over.dds" />
+          <OnClicked>
+            GoldCounterMainWindow:SetHidden(true)
+          </OnClicked>
+        </Button>
+      </Controls>
+    </TopLevelControl>
+  </Controls>
+</GuiXml>
