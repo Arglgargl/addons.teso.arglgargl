@@ -1,3 +1,4 @@
+local isdebug = true
 
 -- Constant
 local SLASH_EXPORT_ROOSTER = "gaexport"
@@ -7,7 +8,7 @@ function GA.OnAddOnLoaded( event, addonName )
   if addonName ~= GA.NAME then
     return;
   end
-  
+
   -- load datastore
   -- local Config_Defaults =  {}  
   -- local Data_Defaults =  {}
@@ -16,7 +17,9 @@ function GA.OnAddOnLoaded( event, addonName )
 
   GA.RegisterSlashCommands()
   
-  zo_callLater( GA.OutputInitMessage, 1000 )
+  if isdebug then
+	zo_callLater( GA.OutputInitMessage, 1000 )
+  end
 end
 
 function GA.OutputInitMessage()
@@ -33,13 +36,10 @@ function GA.MsgGold( text )
     d("|c" .. GA.COLOR_GOLD .. text .. "|r")
 end
 
-
 function GA.RegisterSlashCommands()
-    -- local self = GA
     -- -- local lsc = LibSlashCommander
     -- if not lsc and LibStub then lsc = LibStub:GetLibrary("LibSlashCommander", true) end
     -- if lsc then
-	
         -- local langSlashCommandsEN = self.LANG["en"]["slash_commands"]
         -- local langSlashCommands = self.LANG[self.clientlang]["slash_commands"]
         -- local setStationCmdText = string.format(langSlashCommands["SC_SET_STATION"], HomeStationMarker.name, langSlashCommands["SC_SET"], langSlashCommands["SC_STATION"])
@@ -82,19 +82,11 @@ end
 function GA.CreateEditBox()
     local container = GA_ExportPopup
 
-    local backdrop = WINDOW_MANAGER:CreateControlFromVirtual( nil
-                                                            , container
-                                                            , "ZO_EditBackdrop"
-                                                            )
+    local backdrop = WINDOW_MANAGER:CreateControlFromVirtual( nil, container, "ZO_EditBackdrop")
     backdrop:SetAnchor(TOPLEFT,     container, TOPLEFT,      5, 50)
     backdrop:SetAnchor(BOTTOMRIGHT, container, BOTTOMRIGHT, -5, -5)
 
-    local editbox = WINDOW_MANAGER:CreateControlFromVirtual(
-          nil
-        , backdrop
-        , "ZO_DefaultEditMultiLineForBackdrop"
-        )
-
+    local editbox = WINDOW_MANAGER:CreateControlFromVirtual(nil, backdrop, "ZO_DefaultEditMultiLineForBackdrop")
     editbox:SetMaxInputChars(20000)
 
     return editbox
@@ -102,26 +94,22 @@ end
 
 function GA.ExportGuildlist()
 
-	-- FIXME: make table and concat
-	local output = ""
+	local guildName = GetGuildName(GUILD_SELECTOR.guildId)
+	local depositType = shissuRoster["gold"]
+
 	local lines = {}
 
-	GUILD_ROSTER_MANAGER:RefreshData()
+	lines[1] = string.format("Account (%s)\tDeposit (%s)",guildName, depositType)
 
 	local masterList = GUILD_ROSTER_MANAGER:GetMasterList()
-	for i = 1, #masterList do 
-		local member = masterList[i]
-		
+	for i,member in ipairs(masterList) do
+
 		local account = member.displayName
-		-- REMARK: this filed is probably added by ShissuHistoryScanner / ShissuRooster
+		-- REMARK: this field is added by ShissuRoster
 		local goldDeposit = member.goldDeposit or 0
 
-		local line = account.."\t"..goldDeposit
-		output = output..line.."\n"
-		lines[i] = line
+		lines[i+1] = account.."\t"..goldDeposit
 	end
 	
 	return table.concat(lines, "\n")
-	
---	return output
 end
