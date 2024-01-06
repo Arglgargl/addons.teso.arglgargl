@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Bindings>
+  <Layer name="SI_KEYBINDINGS_LAYER_GENERAL">
+    <!-- 
+    <Category name="|cd4af37GuildAdministration|r">
+      <Action name="GA_TOGGLE_MAIN">
+        <Down>GA.ToggleMainWindow()</Down>
+      </Action>
+    </Category>
+    -->
+  </Layer>
+</Bindings>

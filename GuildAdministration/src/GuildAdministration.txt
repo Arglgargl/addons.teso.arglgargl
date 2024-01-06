@@ -1,0 +1,18 @@
+## APIVersion: 	101040
+## Version: 0.0.1
+## Title: |cd4af37GuildAdministration|r Version |c3689ef0.0.1|r
+## Description: Some tools for helping to administer a trading guild
+## Author: Arglgargl
+## SavedVariables: GuildAdministrationConfig GuildAdministrationData
+
+Init.lua
+
+GuildAdministration.xml
+
+i18n\$(language).lua
+i18n\bindings_$(language).lua
+i18n\descriptions_$(language).lua
+
+GuildAdministration.lua
+
+Bindings\bindings.xml

@@ -4,7 +4,7 @@
   	
   	<property name="addonName" value="GoldCounter"/>
   	<property environment="env"/>
-  	<property name="targetDir" value="${env.HOMEDRIVE}${env.HOMEPATH}\\Documents\\Elder Scrolls Online\\liveeu\\AddOns\\${addonName}" />
+  	<property name="targetDir" value="${env.HOMEDRIVE}${env.HOMEPATH}\\Documents\\Elder Scrolls Online\\live\\AddOns\\${addonName}" />
   	
 	<copy todir="${targetDir}">
 		<fileset dir="../src"></fileset>

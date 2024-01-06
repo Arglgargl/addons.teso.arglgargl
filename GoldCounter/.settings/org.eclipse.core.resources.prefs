@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/i18n/DE.lua=UTF-8
+encoding//src/i18n/descriptions_de.lua=UTF-8
+encoding//src/i18n/descriptions_en.lua=UTF-8
 encoding/<project>=UTF-8
 separateDerivedEncodings=true
