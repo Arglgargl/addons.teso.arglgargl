@@ -14,9 +14,24 @@ function RoosterGuild:New(guildId, guildName)
     return this
 end
 
-function RoosterGuild:PrintMembers(predicate)
+-- Returns a copy of this object, but members are filtered by the given predicate
+-- return RoosterGuild copy, integer count
+function RoosterGuild:FilterMembers(predicate)
+	local copy = RoosterGuild:New(self.id, self.name)
+	
+		local count = 0
+		for account,member in pairs(self.members) do
 
-	d(predicate)
+			if( predicate( member) ) then
+				copy.members[account] = member
+				count = count + 1
+			end
+		end
+
+	return copy, count
+end
+
+function RoosterGuild:PrintMembers(predicate)
 
 	if predicate == nil then
 		predicate = function(member) return true end

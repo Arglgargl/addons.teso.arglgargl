@@ -18,7 +18,7 @@ function GA.OnAddOnLoaded( event, addonName )
   GA.rooster = GA.Rooster:New()
 
   GA.RegisterSlashCommands()
-
+  
   if isdebug then
 	zo_callLater( GA.OutputInitMessage, 1000 )
   end

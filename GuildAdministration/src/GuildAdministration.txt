@@ -12,7 +12,7 @@
 ## Description: Some tools for helping to administer a trading guild
 ## Author: Arglgargl
 ## SavedVariables: GuildAdministrationConfig GuildAdministrationData
-## DependsOn: LibSlashCommander LibHistoire
+## DependsOn: LibSlashCommander LibHistoire LibDialog
 
 Init.lua
 

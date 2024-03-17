@@ -24,7 +24,20 @@ end
 function SlashCommandKickOffliners:Execute(args)
 
 	local guildData = self.rooster:FindGuildByName("Steinfreunde")
+	local offliners, offlinercount = guildData:FilterMembers(IsOffliner);
 
-	local text = guildData:PrintMembers(IsOffliner)
-	GA.OpenPopup(text)
+	local message = "Are your sure to kick "..offlinercount.." member(s)?"
+	for account,member in pairs(offliners.members) do
+		message = message.."\n"..account.." ("..member.rankName..")"
+	end
+
+	local callbackYes = function()
+		for account,member in pairs(offliners.members) do
+			d("Kickking "..account)
+			GuildRemove(offliners.id, account)
+		end
+	end
+
+	LibDialog:RegisterDialog(GA.NAME, "GAKickoffliner", "Kick-Offliners", message, callbackYes, nil, nil, true)
+	LibDialog:ShowDialog(GA.NAME, "GAKickoffliner", {})
 end
