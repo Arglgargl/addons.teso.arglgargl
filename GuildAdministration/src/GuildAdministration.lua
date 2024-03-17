@@ -1,7 +1,7 @@
 local isdebug = true
 
 -- Constant
-local SLASH_EXPORT_ROOSTER = "gaexport"
+local SLASH_GA = "/ga"
 
  -- Initialize AddOn
 function GA.OnAddOnLoaded( event, addonName )
@@ -13,10 +13,12 @@ function GA.OnAddOnLoaded( event, addonName )
   -- local Config_Defaults =  {}  
   -- local Data_Defaults =  {}
   -- GA.config = ZO_SavedVars:New( GA.VARIABLES_CONFIG, GA.VARIABLES_CONFIG_VERSION, nil, Config_Defaults )
-  -- GA.data = ZO_SavedVars:New( GA.VARIABLES_DATA, GA.VARIABLES_DATA_VERSION, nil, Data_Defaults )
+
+  -- init rooster data
+  GA.rooster = GA.Rooster:New()
 
   GA.RegisterSlashCommands()
-  
+
   if isdebug then
 	zo_callLater( GA.OutputInitMessage, 1000 )
   end
@@ -30,28 +32,22 @@ end
  EVENT_MANAGER:RegisterForEvent( GA.NAME, EVENT_ADD_ON_LOADED, GA.OnAddOnLoaded )
 
 
-
 -- Helper
 function GA.MsgGold( text )
     d("|c" .. GA.COLOR_GOLD .. text .. "|r")
 end
 
 function GA.RegisterSlashCommands()
-    -- -- local lsc = LibSlashCommander
-    -- if not lsc and LibStub then lsc = LibStub:GetLibrary("LibSlashCommander", true) end
-    -- if lsc then
-        -- local langSlashCommandsEN = self.LANG["en"]["slash_commands"]
-        -- local langSlashCommands = self.LANG[self.clientlang]["slash_commands"]
-        -- local setStationCmdText = string.format(langSlashCommands["SC_SET_STATION"], HomeStationMarker.name, langSlashCommands["SC_SET"], langSlashCommands["SC_STATION"])
-        -- local cmd = lsc:Register( "/gatest"
-            -- , function(args) GA.SlashCommand(args) end
-            -- , "Mein Test Text")
-    -- else
-        SLASH_COMMANDS["/"..SLASH_EXPORT_ROOSTER] = GA.Show_ExportRoosterPopup
-    -- end
+
+    local mainCmd = LibSlashCommander:Register( SLASH_GA , function(args) GA.OpenPopup("Please select a sub-command") end
+            , "Guild Administration")
+
+	GA.SlashCommandRooster:New(mainCmd, GA.rooster):Register()
+	GA.SlashCommandKickOffliners:New(mainCmd, GA.rooster):Register()
 end
 
-function GA.Show_ExportRoosterPopup(cmd, args)
+
+function GA.OpenPopup(text)
 
     local hidden = GA_ExportPopup:IsHidden()
 
@@ -62,7 +58,6 @@ function GA.Show_ExportRoosterPopup(cmd, args)
 	-- HomeStationMarker_ExportUIWindowTitle:SetText(lang.WINDOW_TITLE)
     end
 
-	local text = GA.ExportGuildlist()
 	GA.editbox:SetText(text:sub(1,MYSTERY_LIMIT))
 	-- Scroll to top. Doesn't work immediately, but
 	-- there's nothing that a SLEEP 10 can't fix!
@@ -72,6 +67,7 @@ function GA.Show_ExportRoosterPopup(cmd, args)
 		GA_ExportPopup:SetHidden(false)
 		SetGameCameraUIMode(true)
 	end
+
 end
 
 function GA.Close_ExportRoosterPopup()
@@ -92,14 +88,25 @@ function GA.CreateEditBox()
     return editbox
 end
 
-function GA.ExportGuildlist()
+function GA.DoAutoranking(cmd, args)
 
-	local guildName = GetGuildName(GUILD_SELECTOR.guildId)
-	local depositType = shissuRoster["gold"]
+	GA.OpenPopup("Test!")
+	
+	-- TODO
+	-- find guildid for steinfreunde
+	-- find sales...
+	-- apply some rules
+	-- show results in popup
 
-	local lines = {}
+end
 
-	lines[1] = string.format("Account (%s)\tDeposit (%s)",guildName, depositType)
+function GA.doRanking()
+
+	-- TODO
+	-- find guildid for steinfreunde
+	-- find sales...
+	-- apply some rules
+	-- show results in popup
 
 	local masterList = GUILD_ROSTER_MANAGER:GetMasterList()
 	for i,member in ipairs(masterList) do
@@ -108,8 +115,11 @@ function GA.ExportGuildlist()
 		-- REMARK: this field is added by ShissuRoster
 		local goldDeposit = member.goldDeposit or 0
 
+		-- get rank  .rankId oder .rankIndex ?
+		-- fixme find rank name?
+
 		lines[i+1] = account.."\t"..goldDeposit
 	end
-	
-	return table.concat(lines, "\n")
+
+
 end

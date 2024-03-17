@@ -12,7 +12,7 @@
 ## Description: Some tools for helping to administer a trading guild
 ## Author: Arglgargl
 ## SavedVariables: GuildAdministrationConfig GuildAdministrationData
-## DependsOn: ShissuRoster
+## DependsOn: LibSlashCommander LibHistoire
 
 Init.lua
 
@@ -20,6 +20,11 @@ i18n\$(language).lua
 i18n\bindings_$(language).lua
 i18n\descriptions_$(language).lua
 
+SlashCommand.lua
+SlashCommandRooster.lua
+SlashCommandKickOffliners.lua
 GuildAdministration.xml
+GARooster.lua
+GARoosterGuild.lua
 GuildAdministration.lua
 Bindings\bindings.xml
