@@ -20,12 +20,21 @@ function Rooster:Init()
   local numGuilds = GetNumGuilds()
   for guildIndex=1,numGuilds do
 
-    -- access current data
+    -- access guild data
 	local guildId = GetGuildId( guildIndex )
 	local guildName = GetGuildName(guildId)
 	local numMembers = GetNumGuildMembers(guildId)
 	
 	if( debug ) then d(""..guildId..guildIndex.." "..guildName) end
+	
+    -- access rank names
+	local rankMap = {}
+	local numRanks = GetNumGuildRanks(guildId);
+	for rankIndex=1,numRanks do
+		local rankName = GetGuildRankCustomName(guildId, rankIndex)
+		-- if( debug ) then d("   "..rankIndex.." "..rankName) end
+		rankMap[rankIndex] = rankName
+	end
 	
 	self.data[guildId] = GA.RoosterGuild:New(guildId, guildName)
 	
@@ -36,6 +45,7 @@ function Rooster:Init()
 	  self.data[guildId].members[account] = {
 		account = account,
 		rankIndex = rankIndex,
+		rankName = rankMap[rankIndex],
 		secsSinceLogoff = secsSinceLogoff,
 	  }
 

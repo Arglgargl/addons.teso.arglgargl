@@ -26,6 +26,5 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.ldt.nature</nature>
 	</natures>
 </projectDescription>

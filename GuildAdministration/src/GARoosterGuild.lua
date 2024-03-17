@@ -27,7 +27,7 @@ function RoosterGuild:PrintMembers(predicate)
 
 	local lines = {}
 
-	local header = string.format("Account (%s)\tOffline Since\tDeposit (%s)",guildName, depositType)
+	local header = string.format("Account (%s)\tRank\tOffline Since\tDeposit (%s)",guildName, depositType)
 	table.insert(lines, header)
 
 	--local masterList = GUILD_ROSTER_MANAGER:GetMasterList()
@@ -40,8 +40,9 @@ function RoosterGuild:PrintMembers(predicate)
 			local goldDeposit = 0
 			local offlineSince = member.secsSinceLogoff / GA.SECONDS_IN_DAY
 			local offlineSinceText = string.format("%.4f", offlineSince )
+			local rankName = member.rankName
 
-			table.insert(lines, account.."\t"..offlineSinceText.."\t"..goldDeposit )
+			table.insert(lines, account.."\t"..rankName.."\t"..offlineSinceText.."\t"..goldDeposit )
 		end
 	end
 
