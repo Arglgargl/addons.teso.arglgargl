@@ -1,18 +1,11 @@
 local AGS = AwesomeGuildStore
+local LootLog = LootLog
 
 local MultiChoiceFilterBase = AGS.class.MultiChoiceFilterBase
 
---local FILTER_ID = AGS.data.FILTER_ID
+-- remark: normally from local FILTER_ID = AGS.data.FILTER_ID
 local FILTER_ID_UCF = 120
 local SUB_CATEGORY_ID = AGS.data.SUB_CATEGORY_ID
-
--- FIXME honor
-local LootLog = LootLog
-
-
-
-
-
 
 
 local UnknownCodexFilter = MultiChoiceFilterBase:Subclass()
@@ -61,12 +54,24 @@ function UnknownCodexFilter:FilterLocalResult(itemLink)
   	local numAquired = GetNumAntiquityLoreEntriesAcquired(antiquityId)
   	local numEntries = GetNumAntiquityLoreEntries(antiquityId)
 
+--    local leadState, timeRemainingS, leadGroup = GetAntiquityLeadInfo(antiquityId)
+--    local leadInProgress = leadState > 1
+--	local leadInProgressAdd     
+--    if leadInProgress then 
+--    	leadInProgressAdd = 1 
+--    else 
+--      leadInProgressAdd = 0
+--     end
+
+--	local numAquiredWithProgress = numAquired + leadInProgressAdd
+	local numAquiredWithProgress = numAquired
+
     if selectionNever then
-      return numAquired == 0
+      return numAquiredWithProgress == 0
     end
     
     if selectionMissing then
-      if numAquired < numEntries then
+      if numAquiredWithProgress < numEntries then
 	    return true
 	  else
 	    return false

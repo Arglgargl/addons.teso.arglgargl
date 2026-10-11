@@ -6,8 +6,8 @@
 
 ## Title: AwesomeLeadFilter
 ## Description: Awesome Guildstore Extension that adds a filter that restricts search for antiquity leads to unknown codex entries. 
-## Version: 0.1
-## AddOnVersion:00001
+## Version: 0.2
+## AddOnVersion:00002
 ## Author: Arglgargl
 ## APIVersion: 101050
 ## SavedVariables: AwesomeLeadFilter_Data

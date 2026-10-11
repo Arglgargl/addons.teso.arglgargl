@@ -3,7 +3,7 @@ function ALF.outputInitMessage()
 end
 
 function ALF.msgGold( text )
-    d("|c" .. ALF.COLOR_GOLD .. text .. "|r")
+    -- d("|c" .. ALF.COLOR_GOLD .. text .. "|r")
 end
 
 function ALF.onAddonLoad(eventCode, name)
