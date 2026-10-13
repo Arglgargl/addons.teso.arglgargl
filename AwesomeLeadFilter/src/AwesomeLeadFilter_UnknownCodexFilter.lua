@@ -12,7 +12,7 @@ local UnknownCodexFilter = MultiChoiceFilterBase:Subclass()
 AGS.class.UnknownCodexFilter = UnknownCodexFilter
 
 function UnknownCodexFilter:New(...)
-    return MultiChoiceFilterBase.New(self, ...)
+    return MultiChoiceFilterBase.New(self,...)
 end
 
 function UnknownCodexFilter:Initialize()
@@ -21,15 +21,15 @@ function UnknownCodexFilter:Initialize()
   filterIcons[1] = {
     id = "never",
     label = "Never Dug Out",
-    icon = "/esoui/art/tutorial/tutorial_collections_tabicon_itemsets_%s.dds",
+    icon = "EsoUI/Art/Campaign/overview_indexIcon_bonus_%s.dds",
   }
   filterIcons[2] = {
     id = "missing",
-    label = "Missing Codex Entries",
-    icon = "/esoui/art/tutorial/tutorial_collections_tabicon_itemsets_%s.dds",
+    label = "Missing Entries",
+    icon = "EsoUI/Art/Journal/journal_tabIcon_loreLibrary_%s.dds",
   }
 
-  MultiChoiceFilterBase.Initialize(self, FILTER_ID_UCF, AGS.class.FilterBase.GROUP_LOCAL, ("Unknown Codex"), filterIcons )
+  MultiChoiceFilterBase.Initialize(self, FILTER_ID_UCF, AGS.class.FilterBase.GROUP_LOCAL, ("Codex Knowledge"), filterIcons )
 
   self:SetEnabledSubcategories({
     [SUB_CATEGORY_ID.CONSUMABLE_TROPHY] = true,
@@ -54,24 +54,18 @@ function UnknownCodexFilter:FilterLocalResult(itemLink)
   	local numAquired = GetNumAntiquityLoreEntriesAcquired(antiquityId)
   	local numEntries = GetNumAntiquityLoreEntries(antiquityId)
 
---    local leadState, timeRemainingS, leadGroup = GetAntiquityLeadInfo(antiquityId)
---    local leadInProgress = leadState > 1
---	local leadInProgressAdd     
---    if leadInProgress then 
---    	leadInProgressAdd = 1 
---    else 
---      leadInProgressAdd = 0
---     end
-
---	local numAquiredWithProgress = numAquired + leadInProgressAdd
-	local numAquiredWithProgress = numAquired
+    -- consider active leads as already acquired
+	local leadInProgressAdd
+    if DoesAntiquityHaveLead(antiquityId) then 
+    	numAquired = numAquired+1 
+    end
 
     if selectionNever then
-      return numAquiredWithProgress == 0
+      return numAquired == 0
     end
     
     if selectionMissing then
-      if numAquiredWithProgress < numEntries then
+      if numAquired < numEntries then
 	    return true
 	  else
 	    return false
